@@ -26,11 +26,9 @@ export class Spring {
 
     const relativeSpeed = relativeVelocity.dot(direction);
 
-    const springForce = this.stiffness * displacement;
+    const forceMagnitude = this.stiffness * displacement + this.damping * relativeSpeed;
 
-    const dampingForce = this.damping * relativeSpeed;
-
-    const force = direction.scale(springForce + dampingForce);
+    const force = direction.scale(forceMagnitude);
 
     this.a.applyForce(force);
     this.b.applyForce(force.scale(-1));

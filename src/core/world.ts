@@ -27,6 +27,10 @@ export class World {
       particle.applyForce(this.gravity.scale(particle.getMass()));
     }
 
+    for (const spring of this.springs) {
+      spring.applyForce();
+    }
+
     for (const particle of this.particles) {
       particle.update(dt);
       Collision.resolveWorldBounds(particle, this.width, this.height);
