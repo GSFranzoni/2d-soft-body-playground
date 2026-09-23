@@ -24,8 +24,8 @@ function createWorld(bodyType: BodyType) {
           count: 12,
           mass: 1,
           particleRadius: 0.02,
-          stiffness: 1000,
-          damping: 3,
+          stiffness: 800,
+          damping: 4,
         })
       : SoftBodyFactory.createGrid(world, {
           rows: 3,
