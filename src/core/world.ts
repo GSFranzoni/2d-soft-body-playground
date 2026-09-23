@@ -1,9 +1,12 @@
 import { Collision } from "@/core/collision";
 import type { Particle } from "@/core/particle";
+import type { Spring } from "@/core/spring";
 import { Vector2 } from "@/core/vector2";
 
 export class World {
   private readonly particles: Particle[] = [];
+
+  private readonly springs: Spring[] = [];
 
   constructor(
     private width: number,
@@ -13,6 +16,10 @@ export class World {
 
   addParticle(particle: Particle) {
     this.particles.push(particle);
+  }
+
+  addSpring(spring: Spring) {
+    this.springs.push(spring);
   }
 
   update(dt: number) {
@@ -38,6 +45,10 @@ export class World {
 
   getParticles() {
     return this.particles;
+  }
+
+  getSprings() {
+    return this.springs;
   }
 
   getWidth(): number {

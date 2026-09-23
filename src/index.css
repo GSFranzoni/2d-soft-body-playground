@@ -74,4 +74,7 @@
   --input: oklch(1 0 0 / 0.14);
   --ring: oklch(0.7 0.17 325);
   --radius: 1.25rem;
+
+  --simulation-particle: oklch(0.82 0.17 195);
+  --simulation-spring: oklch(0.97 0.015 300 / 0.45);
 }
