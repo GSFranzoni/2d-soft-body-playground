@@ -14,7 +14,7 @@ const BODY_OPTIONS: { type: BodyType; label: string }[] = [
 ];
 
 function createWorld(bodyType: BodyType) {
-  const world = new World(8, 6, new Vector2(0, 10));
+  const world = new World(8, 6, new Vector2(0, 6));
 
   const body =
     bodyType === "blob"
@@ -24,7 +24,7 @@ function createWorld(bodyType: BodyType) {
           count: 12,
           mass: 1,
           particleRadius: 0.02,
-          stiffness: 800,
+          stiffness: 1000,
           damping: 3,
         })
       : SoftBodyFactory.createGrid(world, {
@@ -34,7 +34,7 @@ function createWorld(bodyType: BodyType) {
           spacing: 1,
           mass: 1,
           radius: 0.02,
-          stiffness: 500,
+          stiffness: 1000,
           damping: 2,
         });
 
