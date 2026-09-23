@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 0.5rem);
+  --radius-md: calc(var(--radius) - 0.25rem);
+  --radius-lg: var(--radius);
+  --radius-frame: calc(var(--radius) + 0.5rem);
+  --radius-frame-inner: calc(var(--radius) + 0.5rem - 1px);
+  --radius-pill: 9999px;
+
+  --background-image-ambient:
+    radial-gradient(
+      circle at 50% 45%,
+      color-mix(in oklch, var(--primary) 20%, transparent) 0%,
+      transparent 37%
+    ),
+    radial-gradient(
+      circle at 85% 15%,
+      color-mix(in oklch, var(--primary) 14%, transparent) 0%,
+      transparent 26%
+    );
+  --background-image-frame: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--primary) 65%, transparent),
+    color-mix(in oklch, var(--ring) 45%, transparent),
+    color-mix(in oklch, var(--primary) 55%, transparent)
+  );
+
+  --spacing-edge: 1.25rem;
+  --spacing-page-padding: 2.5rem;
+  --spacing-slider: 0.5rem;
+  --container-layout: 64rem;
+  --container-canvas: min(82svh, 48rem);
+  --width-popover: 14rem;
+  --text-label: 0.625rem;
+  --text-caption: 0.75rem;
+  --tracking-label: 0.18em;
+  --blur-panel: 0.75rem;
+  --opacity-ambient: 0.7;
+  --shadow-simulation: 0 0 80px -20px color-mix(in oklch, var(--primary) 35%, transparent);
+  --shadow-popover: 0 1.25rem 2.5rem rgb(0 0 0 / 0.3);
+}
+
+:root {
+  --background: oklch(0.13 0.035 295);
+  --foreground: oklch(0.97 0.015 300);
+  --card: oklch(0.18 0.045 295);
+  --card-foreground: oklch(0.97 0.015 300);
+  --popover: oklch(0.16 0.042 295 / 0.94);
+  --popover-foreground: oklch(0.97 0.015 300);
+  --primary: oklch(0.76 0.18 310);
+  --primary-foreground: oklch(0.17 0.04 295);
+  --secondary: oklch(0.24 0.045 295 / 0.75);
+  --secondary-foreground: oklch(0.9 0.035 300);
+  --muted: oklch(0.22 0.035 295);
+  --muted-foreground: oklch(0.7 0.045 300);
+  --border: oklch(1 0 0 / 0.1);
+  --input: oklch(1 0 0 / 0.14);
+  --ring: oklch(0.7 0.17 325);
+  --radius: 1.25rem;
+}
