@@ -5,67 +5,53 @@
 [![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](https://react.dev/)
 [![Bun](https://img.shields.io/badge/Bun-1.4-000?logo=bun&logoColor=white)](https://bun.sh/)
 
-[Live demo →](https://gsfranzoni.github.io/2d-soft-body-playground/)
+[Open the live demo →](https://gsfranzoni.github.io/2d-soft-body-playground/)
 
-2D Soft Body Playground is a small, interactive 2D particle simulation. A square world holds a population of differently sized particles that move, collide elastically, and bounce from its bounds. The gravity control changes the world's vertical gravitational acceleration live, from 0 to 20 m/s².
+An interactive 2D soft-body physics playground built with React, Canvas 2D, and TypeScript. Select a body, watch its particle-and-spring system react to gravity and collisions, and switch between a clean surface view and the underlying physics representation.
 
-The project keeps simulation logic separate from rendering and UI. `World` owns particles, gravity, integration, boundary handling, and collision resolution. `Canvas` advances and renders that world on each animation frame. The React app only creates the initial scene and exposes the gravity control.
+## Controls
 
-## How it works
+- **DEBUG** — toggles between smooth filled bodies and the particles/springs that drive them.
+- **Body picker** — choose a **Blob** or **Grid**. Selecting one creates a fresh simulation.
+- **Reset** — recreates the current body from its initial state.
+
+The particle badge shows the number of physics particles in the active scene.
+
+## Simulation
+
+Each scene contains a physics `World` and rendering metadata for its soft bodies:
 
 ```text
-Animation frame
-     │
-     ▼
-World.update(delta time)
-     │
-     ├── Apply gravity force: F = m × g
-     │
-     ├── Integrate acceleration, velocity, and position
-     │
-     ├── Resolve collisions with the world's four bounds
-     │
-     └── Check every particle pair and resolve elastic collisions
-     │
-     ▼
-Canvas renders the updated particle positions
+Scene
+├── World
+│   ├── particles
+│   └── springs
+└── bodies
+    └── ordered perimeter-particle references
 ```
 
-Particles are represented in meters and seconds. The canvas renderer uses a fixed pixels-per-meter scale only when drawing, so changing gravity still uses its physical value in m/s² rather than a pixel conversion.
+`World` owns only the entities that participate in physics. It applies gravity and spring forces, integrates particles, resolves world-boundary collisions, and resolves particle-particle collisions. The body metadata references the same particles, so the renderer always reads the current simulated positions without duplicating state.
 
-For an overlapping pair, the collision solver first separates the particles according to their inverse masses, then updates their velocities along the collision normal using the equations for a 2D elastic collision.
+### Bodies
 
-## What you can explore
+- **Blob** — perimeter particles are linked in a loop and connected to a center particle with radial springs.
+- **Grid** — particles are connected by structural and shear springs. Its outer particles form the rendered perimeter.
 
-- Watch 50 randomly placed particles move and collide in a square world.
-- Adjust downward gravity from 0 to 20 m/s² with the native popover slider.
-- See particles reflect from each world boundary.
-- Inspect a small physics core made up of vectors, particles, collisions, and the world simulation.
-- Explore a responsive canvas renderer driven by `requestAnimationFrame`.
+In normal mode, the renderer traces a closed curve through the midpoints between ordered perimeter particles. Quadratic Canvas 2D curves give the visible surface a rounded shape while keeping internal particles out of the outline. In Debug mode, every spring and particle is rendered directly.
 
-## Improvements
+Physics stays in meters and seconds. `PIXELS_PER_METER` is used only at the Canvas boundary to convert between simulation coordinates and drawing coordinates.
 
-- [ ] Add controls for particle count, radius range, mass, and initial velocity.
-- [ ] Add pause, step, reset, and randomize controls.
-- [ ] Add restitution and friction parameters for inelastic collisions.
-- [ ] Add spatial partitioning to scale collision detection beyond the current all-pairs check.
-- [ ] Add trails, velocity vectors, and collision diagnostics.
+## Tech stack
 
-## References
+- React 19
+- TypeScript
+- Vite 8
+- Tailwind CSS 4
+- Canvas 2D
+- Lucide React
+- Bun
 
-- [2D Elastic Collisions](https://www.vobarian.com/collisions/2dcollisions2.pdf) — derivation used by the particle-pair collision resolver.
-
-## Support
-
-If you enjoyed this small physics experiment, you can support its creator here:
-
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?logo=buymeacoffee&logoColor=000)](https://buymeacoffee.com/gsfranzoni)
-
-<a href="https://buymeacoffee.com/gsfranzoni">
-  <img src="public/assets/buymeacoffee.png" width="220" alt="Buy Me a Coffee QR code for gsfranzoni" />
-</a>
-
-## Quick start
+## Getting started
 
 Requires [Bun](https://bun.sh/) 1.4 or newer.
 
@@ -76,22 +62,16 @@ bun run dev
 
 Open the Vite URL printed in the terminal, usually [`http://localhost:5173`](http://localhost:5173).
 
-To create a production build locally:
-
-```bash
-bun run build
-```
-
 ## Commands
 
-| Command             | Purpose                                   |
-| ------------------- | ----------------------------------------- |
-| `bun run dev`       | Start the Vite development server.        |
-| `bun run build`     | Type-check and create a production build. |
-| `bun run preview`   | Preview the production build locally.     |
-| `bun run lint`      | Run Oxlint.                               |
-| `bun run lint:fix`  | Apply available Oxlint fixes.             |
-| `bun run fmt`       | Format source files with Oxfmt.           |
+| Command | Purpose |
+| --- | --- |
+| `bun run dev` | Start the development server. |
+| `bun run build` | Type-check and create a production build. |
+| `bun run preview` | Preview the production build locally. |
+| `bun run lint` | Run Oxlint. |
+| `bun run lint:fix` | Apply available lint fixes. |
+| `bun run fmt` | Format files with Oxfmt. |
 | `bun run fmt:check` | Check formatting without modifying files. |
 
 ## Project structure
@@ -99,15 +79,27 @@ bun run build
 ```text
 src
 ├── components
-│   └── canvas.tsx              Canvas renderer and animation-frame simulation loop
+│   └── canvas.tsx       Animation loop and Canvas boundary
 ├── core
-│   ├── collision.ts            Particle-pair and world-boundary collision resolution
-│   ├── particle.ts             Particle state, forces, and integration
-│   ├── vector2.ts              2D vector math primitives
-│   └── world.ts                Particle collection, gravity, and simulation updates
+│   ├── collision.ts     Particle and world-boundary collision resolution
+│   ├── factory.ts       Blob and grid construction
+│   ├── particle.ts      Particle state and integration
+│   ├── renderer.ts      Debug and smooth-surface Canvas rendering
+│   ├── spring.ts        Spring-damper force calculation
+│   ├── vector2.ts       2D vector math
+│   └── world.ts         Physics-world update loop
 ├── hooks
-│   └── use-animation-frame.ts  requestAnimationFrame scheduling with a delta-time cap
-├── app.tsx                     Simulation setup and gravity control UI
-├── index.css                   shadcn-inspired design tokens and Tailwind theme mapping
-└── main.tsx                    React application entry point
+│   └── use-animation-frame.ts
+├── app.tsx              Scene setup and simulation toolbar
+└── index.css            Design tokens and Tailwind theme mapping
 ```
+
+## Support
+
+If you enjoyed this physics experiment, you can support its creator here:
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?logo=buymeacoffee&logoColor=000)](https://buymeacoffee.com/gsfranzoni)
+
+<a href="https://buymeacoffee.com/gsfranzoni">
+  <img src="public/assets/buymeacoffee.png" width="220" alt="Buy Me a Coffee QR code for gsfranzoni" />
+</a>
